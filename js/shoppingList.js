@@ -21,7 +21,7 @@ function ShoppingList() {
 	this.items = [];
 }
 
-// lets the user change the name parameter of a shopping list
+// lets the user change the name property of a shopping list
 
 ShoppingList.prototype.changeName = function(newName) {
 	this.name = newName;
@@ -83,8 +83,8 @@ function getShoppingLists() {
 }
 
 /* 
-	budget should be a global value, and since it's just a key/value pair, 
-    storing via local storage makes the most sense! Also works in PhoneGap!
+	budget should be a global variable, and since it's just a key/value pair, 
+	storing via local storage makes the most sense! Also works in PhoneGap!
 */
 
 function setBudget(budget) {
@@ -99,11 +99,9 @@ function setBudget(budget) {
 }
 
 // ------------------------------------------------------------------------
-
 // some testing code to make sure functionality works as expected
 
 /*
-
 var myList = createShoppingList();
 myList.addItem("party whistle");
 myList.items[0].addPrice("0.99");
@@ -112,18 +110,8 @@ myList.changeName("new test list 3");
 console.log(typeof myList);
 addListToDB(myList);
 
-
-
 getShoppingLists();
 
 setBudget("25.00");
 console.log(localStorage.getItem("budget"));
-
 */
-
-
-
-
-
-
-
