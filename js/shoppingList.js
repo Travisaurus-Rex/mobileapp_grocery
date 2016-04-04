@@ -6,6 +6,10 @@
 	Once this code is logically perfected, it will be 
 	converted to an angular factory and injected as a 
 	dependency into the main controller of the application in main.js
+
+	mLAB api link = https://api.mlab.com/api/1/databases/grocery_app/collections/shopping_lists?apiKey=wgTRmRzbddc_Up0rVf3WX3SBIQN81cOG
+
+	API key: wgTRmRzbddc_Up0rVf3WX3SBIQN81cOG
 */
 
 
@@ -15,6 +19,7 @@
 // name property and an array of items
 
 function ShoppingList() {
+	this.id;
 	this.name;
 	this.items = [];
 }
@@ -30,7 +35,6 @@ function ShoppingList() {
 
 ShoppingList.prototype.changeName = function(newName) {
 	this.name = newName;
-	console.log(this.name);
 }
 
 // SHOPPING LIST METHOD
@@ -41,7 +45,6 @@ ShoppingList.prototype.changeName = function(newName) {
 ShoppingList.prototype.addItem = function(name) {
 	var item = new ListItem(name);
 	this.items.push(item);
-	console.log(item);
 }
 
 // LIST ITEM OBJECT
@@ -53,7 +56,15 @@ ShoppingList.prototype.addItem = function(name) {
 
 function ListItem(name) {
 	this.name = name;
+	this.price;
+	this.rating;
 }
+
+ListItem.prototype.addPrice = function(price) {
+	var parsedPrice = parseFloat(price);
+	this.price = parsedPrice;
+}
+
 
 
 
@@ -67,4 +78,32 @@ myList.addItem("chips");
 myList.addItem("brown sugar");
 myList.addItem("ketchup");
 
-console.log(myList.items);
+var thirdItem = myList.items[2];
+console.log(thirdItem);
+
+myList.items[2].addPrice("3.29");
+
+var thirdItemPrice = myList.items[2].price;
+console.log("$" + thirdItemPrice);
+
+var jsonList = JSON.stringify(myList);
+console.log(jsonList);
+
+
+/*
+
+This totally worked........I don't know what I did differently from last time. Thus, the life of a programmer.
+Well, at least I don't have to deal with PHP and SQL! WHOOOOOOOOOOOOOOOOO!!!!!!!!!!!!!11111111one
+
+
+$.ajax({
+    url: "https://api.mongolab.com/api/1/databases/grocery_app/collections/shopping_lists?apiKey=wgTRmRzbddc_Up0rVf3WX3SBIQN81cOG",
+    type: "POST",
+    data: JSON.stringify(myList),
+    contentType: "application/json"
+})
+
+*/
+
+
+
