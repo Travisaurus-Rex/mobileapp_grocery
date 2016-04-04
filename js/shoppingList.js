@@ -12,11 +12,8 @@
 	API key: wgTRmRzbddc_Up0rVf3WX3SBIQN81cOG
 */
 
-
+// -------------------------------------------------------------------------
 // SHOPPING LIST OBJECT
-
-// takes no parameters, but requires a
-// name property and an array of items
 
 function ShoppingList() {
 	this.id;
@@ -24,35 +21,21 @@ function ShoppingList() {
 	this.items = [];
 }
 
-// SHOPPING LIST METHOD
-
-// In the full app, each shopping list will have
-// a generated name, such as "List 1" or "Shopping List 2"
-// and so on. The number will be generated based on
-// however many lists currently exist in the user's
-// database. This method allows the user to change
-// the name later.
+// lets the user change the name parameter of a shopping list
 
 ShoppingList.prototype.changeName = function(newName) {
 	this.name = newName;
 }
 
-// SHOPPING LIST METHOD
-
-// this method creates a new instance of the ListItem object,
-// then pushes the new object into the shopping list's items array
+// creates a ListItem instance, then pushes it into the ShoppingList's items array
 
 ShoppingList.prototype.addItem = function(name) {
 	var item = new ListItem(name);
 	this.items.push(item);
 }
 
+// -------------------------------------------------------------------------
 // LIST ITEM OBJECT
-
-// each list item must take in a name parameter
-// whenever instantiated. Each list item will also
-// have more properties, such as prices and importance
-// ratings, but for this test a name property is only nececssary
 
 function ListItem(name) {
 	this.name = name;
@@ -60,50 +43,87 @@ function ListItem(name) {
 	this.rating;
 }
 
+// adds a price to the ListItem
+
 ListItem.prototype.addPrice = function(price) {
 	var parsedPrice = parseFloat(price);
 	this.price = parsedPrice;
 }
 
+// -------------------------------------------------------------------------
+// functions for creating instances of shopping lists and adding them to the database
 
+function createShoppingList() {
+	var list = new ShoppingList();
+	return list;
+}
 
+function addListToDB(newList) {
+	if((newList != null) && (typeof newList == "object")) {
+		$.ajax({
+		    url: "https://api.mongolab.com/api/1/databases/grocery_app/collections/shopping_lists?apiKey=wgTRmRzbddc_Up0rVf3WX3SBIQN81cOG",
+		    type: "POST",
+		    data: JSON.stringify(newList),
+		    contentType: "application/json"
+		});
+	}
+	else {
+		console.log("Cannot add following type as list: " + typeof newList);
+	}
+}
 
+function getShoppingLists() {
+	$.ajax({
+		url: "https://api.mongolab.com/api/1/databases/grocery_app/collections/shopping_lists?apiKey=wgTRmRzbddc_Up0rVf3WX3SBIQN81cOG",
+		datatype: "json",
+		success: function(data) {
+			console.log(data);
+		}
+	});
+}
+
+/* 
+	budget should be a global value, and since it's just a key/value pair, 
+    storing via local storage makes the most sense! Also works in PhoneGap!
+*/
+
+function setBudget(budget) {
+	var parsedBudget = parseFloat(budget);
+
+	// if a budget variable has already been set, remove it
+	if(localStorage.getItem("budget")) {
+		localStorage.removeItem("budget");
+	} 
+	
+	localStorage.setItem("budget", parsedBudget);
+}
+
+// ------------------------------------------------------------------------
 
 // some testing code to make sure functionality works as expected
 
-var myList = new ShoppingList();
-
-myList.changeName("My Shopping List");
-myList.addItem("chips");
-myList.addItem("brown sugar");
-myList.addItem("ketchup");
-
-var thirdItem = myList.items[2];
-console.log(thirdItem);
-
-myList.items[2].addPrice("3.29");
-
-var thirdItemPrice = myList.items[2].price;
-console.log("$" + thirdItemPrice);
-
-var jsonList = JSON.stringify(myList);
-console.log(jsonList);
-
-
 /*
 
-This totally worked........I don't know what I did differently from last time. Thus, the life of a programmer.
-Well, at least I don't have to deal with PHP and SQL! WHOOOOOOOOOOOOOOOOO!!!!!!!!!!!!!11111111one
+var myList = createShoppingList();
+myList.addItem("party whistle");
+myList.items[0].addPrice("0.99");
+myList.changeName("new test list 3");
+
+console.log(typeof myList);
+addListToDB(myList);
 
 
-$.ajax({
-    url: "https://api.mongolab.com/api/1/databases/grocery_app/collections/shopping_lists?apiKey=wgTRmRzbddc_Up0rVf3WX3SBIQN81cOG",
-    type: "POST",
-    data: JSON.stringify(myList),
-    contentType: "application/json"
-})
+
+getShoppingLists();
+
+setBudget("25.00");
+console.log(localStorage.getItem("budget"));
 
 */
+
+
+
+
 
 
 
