@@ -1,0 +1,21 @@
+/* styles the input/button for adding items to a list */
+
+#item-input-holder {
+
+}
+
+#btn-additem {
+	float: right;
+	height: 40px;
+	width: 40px;
+}
+
+#list-input-holder {
+	overflow: hidden;
+
+}
+
+#input-item {
+	width: 100%;
+	height: 40px;
+}
