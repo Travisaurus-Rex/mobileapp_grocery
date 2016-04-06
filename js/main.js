@@ -1,19 +1,34 @@
-// angular test
+// onsen app
+var module = ons.bootstrap('my-app', ['onsen']);
 
-var app = angular.module("testApp", []);
+    module.controller('AppController', function($scope) {});
 
-app.controller('mainController', function($scope) {
+    module.controller('PageController', function($scope) {
+        ons.ready(function() {
 
-	// create items array, and a method that pushes new items into it
+          	// delicious angular/onsen-fused code goes here
 
-	$scope.items = [];
+			$scope.items = [];
 
-	$scope.addToList = function(name) {
-		if (!name) {
-			// do nothing
-		} else {
-			$scope.items.push(name);
-			$scope.name = "";
-		}
-	}
-});
+			$scope.addToList = function(name) {
+				if (!name) {
+					console.log("You must enter an item!");
+				} else {
+					var item = new ListItem(name);
+					$scope.items.push(item);
+					$scope.name = "";
+				}
+			}
+
+			$scope.myList = new ShoppingList();
+
+			$scope.myList.changeName("My Shopping List");
+
+			$scope.myList.addItem("chips");
+			$scope.myList.items[0].addPrice("1.49")
+
+			console.log($scope.myList);
+	
+	
+        });
+ 	});
