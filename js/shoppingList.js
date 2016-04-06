@@ -1,23 +1,21 @@
 /*
-	This code is far from finished. This is a preliminary
-	set of objects that will define the structure of the
-	app and its functionality. 
+	All the OOP goodness is stored here!
 
-	Once this code is logically perfected, it will be 
-	converted to an angular factory and injected as a 
-	dependency into the main controller of the application in main.js
+	CLASSES: ShoppingList, ListItem
 
 	mLAB api link = https://api.mlab.com/api/1/databases/grocery_app/collections/shopping_lists?apiKey=wgTRmRzbddc_Up0rVf3WX3SBIQN81cOG
 
 	API key: wgTRmRzbddc_Up0rVf3WX3SBIQN81cOG
 */
 
+
+
 // -------------------------------------------------------------------------
 // SHOPPING LIST OBJECT
 
 function ShoppingList() {
-	this.id;
-	this.name;
+	this.id    = null;
+	this.name  = null;
 	this.items = [];
 }
 
@@ -38,25 +36,24 @@ ShoppingList.prototype.addItem = function(name) {
 // LIST ITEM OBJECT
 
 function ListItem(name) {
-	this.name = name;
-	this.price;
-	this.rating;
+	this.name   = name;
+	this.price  = null;
+	this.rating = "staple";
 }
 
 // adds a price to the ListItem
 
 ListItem.prototype.addPrice = function(price) {
 	var parsedPrice = parseFloat(price);
-	this.price = parsedPrice;
+	this.price      = parsedPrice;
+}
+
+ListItem.prototype.changeRating = function(value) {
+	this.rating = value;
 }
 
 // -------------------------------------------------------------------------
 // functions for creating instances of shopping lists and adding them to the database
-
-function createShoppingList() {
-	var list = new ShoppingList();
-	return list;
-}
 
 function addListToDB(newList) {
 	if((newList != null) && (typeof newList == "object")) {
@@ -99,19 +96,3 @@ function setBudget(budget) {
 }
 
 // ------------------------------------------------------------------------
-// some testing code to make sure functionality works as expected
-
-/*
-var myList = createShoppingList();
-myList.addItem("party whistle");
-myList.items[0].addPrice("0.99");
-myList.changeName("new test list 3");
-
-console.log(typeof myList);
-addListToDB(myList);
-
-getShoppingLists();
-
-setBudget("25.00");
-console.log(localStorage.getItem("budget"));
-*/
