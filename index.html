@@ -10,44 +10,72 @@
         <meta name="description" content="">
         <link rel="stylesheet" href="lib/onsen/css/onsenui.css"/>
         <link rel="stylesheet" href="lib/onsen/css/onsen-css-components.css"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
         <link rel="stylesheet" href="css/main_styles.css"/>
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
 
     <!-- create new angular app here -->
     <body>
-
-    <div ng-controller="AppController">
-
+    
+    <div>
       <ons-navigator var="myNavigator">
-      <ons-page ng-controller="PageController">
-      
-        <!-- this input takes in a string for a new list item, then the button adds that item to an array -->
-          <div id="item-input-holder">
-            <button id="btn-additem" class="button" ng-click="addToList(name)"><i class="fa fa-plus"></i></button>
+        
+        <!-- manage shopping lists here -->
+        <ons-page ng-controller="ListController">
+          <ul class="list">
+            <li class="list__item list__item--chevron" ng-repeat="list in users_lists" ng-click="openList(list)">
+              {{ list.name }}
+            </li>
+          </ul>
+          <button id="btn-createlist" class="button button--large" ng-click="createNewList()">New List</button>
+        <!-- controller end here -->  
+        </ons-page>
+
+
+        <!-- list template-->
+        <ons-template id="list.html">
+          <ons-page ng-controller="ItemController">
+            <ons-toolbar>
+              <div class="left" style="line-height: 44px">
+                <ons-back-button>Back</ons-back-button>
+              </div>
+              <div class="center">{{ currentList.name }}</div>
+              <div class="navigation-bar__right">
+                <span class="toolbar-button--quiet
+                navigation-bar__line-height">
+                  <i id="trash" class="fa fa-minus-circle"></i>
+                </span>
+              </div>
+                
+              
+            </ons-toolbar>          
+            <div id="item-input-holder">
+              <button id="btn-additem" class="button" ng-click="currentList.addItem(inputName); clearModel()">   <i class="fa fa-plus"></i>
+              </button>
             <div id="list-input-holder">
-              <input id="input-item" type="text" class="text-input" ng-model="name"/>
+              <input id="input-item" type="text" placeholder="add an item" class="text-input" ng-model="inputName"/>
             </div>
           </div>
+          <h6>My Items:</h6>
+          <ul class="list">
+            <!-- new list items get displayed here -->
+            <li class="list__item" ng-repeat="item in currentList.items"> 
+              {{ item.name }}
+              <i ng-click="currentList.deleteItem(item.id)" class="fa fa-times-circle delete"></i>
+            </li>
+          </ul>
+          <button id="btn-saveitem" class="button button--large" ng-click="saveList()">Save</button>
+          <!-- controller end -->
+          </ons-page> 
+        </ons-template>
 
-
-        <ul class="list">
-          <!-- new list items get displayed here -->
-          <li class="list__item" ng-repeat="item in items"> 
-            {{ item.name }}
-            {{ item.price }}
-            {{ item.rating }} 
-          </li>
-        </ul>
-        
-        </ons-page>
+       
       </ons-navigator>
-
     </div>
-
        <script src="js/angular/angular.min.js"></script>
        <script src="lib/onsen/js/onsenui.js"></script>
-       <script src="js/jquery-2.2.2.min.js"></script>
+       <script src="js/jquery-2.2.1.js"></script>
        <script src="js/main.js"></script>
        <script src="js/shoppingList.js"></script>
     </body>
