@@ -152,8 +152,8 @@
                     </ons-toolbar>
                     <div class="data-display">
                     <p>Item: {{ item.name }}</p>
-                    <p># of items to remove: {{ item.quantity }}</p>
-                    <p>Total after removal: {{ currentList.total - (item.price * item.quantity) | currency }} </p>
+                    <p># of items to remove: {{ quantityRmv }}</p>
+                    <p>Total after removal: {{ currentList.total - (item.price * quantityRmv) | currency }} </p>
                     </div>
 
                     <div class="centered-button-bar">
@@ -248,6 +248,6 @@
        <script src="js/services/addtodbservice.js"></script>
        <script src="js/services/getfromdbservice.js"></script>
        <script src="js/services/setlistservice.js"></script>
+       <script src="js/services/itemtodeleteservice.js"></script>
     </body>
 </html>
-
