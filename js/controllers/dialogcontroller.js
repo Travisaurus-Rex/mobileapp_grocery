@@ -3,11 +3,13 @@ module.controller("DialogController", ['$scope', '$rootScope', 'setListService',
 	$rootScope.$on("getThisItem", function(){
 		$scope.item        = setItemService.getItem();
 		$scope.maxQuantity = $scope.item.quantity;
+		$scope.quantityRmv = $scope.item.quantity;
 		console.log($scope.item.name);
 	});
 
 	$scope.item        = setItemService.getItem();
 	$scope.maxQuantity = $scope.item.quantity;
+	$scope.quantityRmv = $scope.item.quantity;
 	$scope.setData     = setItemService.setData;
 	$scope.currentList = setListService.getList();
 	$scope.quantity    = 1;
@@ -38,14 +40,14 @@ module.controller("DialogController", ['$scope', '$rootScope', 'setListService',
 	}
 
 	$scope.itemQuantityIncrease = function() {
-		if ($scope.item.quantity < $scope.maxQuantity) {
-			$scope.item.quantity++;
+		if ($scope.quantityRmv < $scope.maxQuantity) {
+			$scope.quantityRmv++;
 		}
 	}
 
 	$scope.itemQuantityDecrease = function() {
-		if ($scope.item.quantity > 1) {
-			$scope.item.quantity--;
+		if ($scope.quantityRmv > 1) {
+			$scope.quantityRmv--;
 		}
 	}
 
