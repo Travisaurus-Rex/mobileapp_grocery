@@ -1,19 +1,18 @@
-module.controller("DialogController", ['$scope', '$rootScope', 'setListService', 'setItemService', function($scope, $rootScope, setListService, setItemService){
+module.controller("DialogController", ['$scope', '$rootScope', 'setListService', 'setItemService', 'itemtodeleteservice', function($scope, $rootScope, setListService, setItemService, itemtodeleteservice){
 
 	$rootScope.$on("getThisItem", function(){
 		$scope.item        = setItemService.getItem();
 		$scope.maxQuantity = $scope.item.quantity;
 		$scope.quantityRmv = $scope.item.quantity;
-		console.log($scope.item.name);
 	});
-
-	$scope.item        = setItemService.getItem();
-	$scope.maxQuantity = $scope.item.quantity;
-	$scope.quantityRmv = $scope.item.quantity;
-	$scope.setData     = setItemService.setData;
-	$scope.currentList = setListService.getList();
-	$scope.quantity    = 1;
-	$scope.placeHolder = "Price";
+	$scope.itemToDelete = itemtodeleteservice.itemToDelete;
+	$scope.item         = setItemService.getItem();
+	$scope.maxQuantity  = $scope.item.quantity;
+	$scope.quantityRmv  = $scope.item.quantity;
+	$scope.setData      = setItemService.setData;
+	$scope.currentList  = setListService.getList();
+	$scope.quantity     = 1;
+	$scope.placeHolder  = "Price";
 
 	$scope.checkData = function(price, quantity) {
 		var parsed = parseFloat(price);
@@ -64,10 +63,15 @@ module.controller("DialogController", ['$scope', '$rootScope', 'setListService',
     }
 
     $scope.removeFromCart = function() {
-    	$scope.difference         = $scope.maxQuantity - $scope.item.quantity;
-    	$scope.priceToSubtract    = $scope.item.price  * $scope.item.quantity;
+    	$scope.difference         = $scope.maxQuantity - $scope.quantityRmv;
+    	$scope.priceToSubtract    = $scope.item.price  * $scope.quantityRmv;
     	$scope.currentList.total -= $scope.priceToSubtract;
     	$scope.item.quantity      = $scope.difference;
+    	if ($scope.item.quantity == 0) {
+    		// remove this item from the cart array (from inside cart controller)
+    		$scope.itemToDelete($scope.item);
+    		$rootScope.$emit("deleteFromCart", {});
+    	}
     	retard.hide();
     }
 
