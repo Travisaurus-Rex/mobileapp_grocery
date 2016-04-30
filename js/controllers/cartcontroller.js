@@ -1,4 +1,4 @@
-module.controller('CartController', ['$scope', '$rootScope', 'setListService', 'setItemService', function($scope, $rootScope, setListService, setItemService) {
+module.controller('CartController', ['$scope', '$rootScope', 'setListService', 'setItemService', 'itemtodeleteservice', function($scope, $rootScope, setListService, setItemService, itemtodeleteservice) {
 
 	$scope.currentList = setListService.getList();
 	$scope.setItem = setItemService.setItem;
@@ -21,6 +21,11 @@ module.controller('CartController', ['$scope', '$rootScope', 'setListService', '
             $rootScope.$emit("getThisItem", {});
             $scope.show('removefromcart.html');
     }
+
+     $rootScope.$on("deleteFromCart", function(){
+     	$scope.itemToDelete = itemtodeleteservice.getItemToDelete();
+    	$scope.currentList.deleteFromCart($scope.itemToDelete.id);
+    });
 	
 
 }]);
