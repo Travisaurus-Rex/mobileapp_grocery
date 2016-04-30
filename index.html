@@ -11,72 +11,243 @@
         <link rel="stylesheet" href="lib/onsen/css/onsenui.css"/>
         <link rel="stylesheet" href="lib/onsen/css/onsen-css-components.css"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+
         <link rel="stylesheet" href="css/main_styles.css"/>
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
 
     <!-- create new angular app here -->
     <body>
-    
-    <div>
-      <ons-navigator var="myNavigator">
+      
+      <ons-tabbar>
+        <ons-tab page="list_management.html" label="Lists" icon="ion-ios-list-outline" active="true"></ons-tab>
+        <ons-tab page="shopping.html" label="Shopping" icon="ion-ios-cart-outline"></ons-tab>
+      </ons-tabbar>
+
+
+
         
-        <!-- manage shopping lists here -->
-        <ons-page ng-controller="ListController">
-          <ul class="list">
-            <li class="list__item list__item--chevron" ng-repeat="list in users_lists" ng-click="openList(list)">
-              {{ list.name }}
-            </li>
-          </ul>
-          <button id="btn-createlist" class="button button--large" ng-click="createNewList()">New List</button>
-        <!-- controller end here -->  
-        </ons-page>
+        <!-- manage shopping lists here // list management template-->
+        <ons-template id="list_management.html">
+          <ons-navigator var="itemsnav">
+            <ons-page ng-controller="ListController">
+            <button id="btn-createlist" class="button button--large" ng-click="createNewList()">Create List</button>
+              <ul class="list">
+                <li class="list__item list__item--chevron" ng-repeat="list in allLists" ng-click="openList(list, 'list.html')">
+                  {{ list.name }}
+                </li>
+              </ul>
+            </ons-page>
+          </ons-navigator>
+        </ons-template>
 
 
-        <!-- list template-->
+
+
+
+        <!-- display list items here // list template-->
         <ons-template id="list.html">
           <ons-page ng-controller="ItemController">
             <ons-toolbar>
               <div class="left" style="line-height: 44px">
                 <ons-back-button>Back</ons-back-button>
               </div>
-              <div class="center">{{ currentList.name }}</div>
-              <div class="navigation-bar__right">
-                <span class="toolbar-button--quiet
-                navigation-bar__line-height">
-                  <i id="trash" class="fa fa-minus-circle"></i>
+              <div class="center">
+                <div ng-click="changeName()" ng-show="!clicked">
+                  {{ currentList.name }}
+                </div>
+                <div ng-show="clicked">
+                  <input ng-model="newName" type="text"/>
+                  <button ng-click="saveName()" class="button button--quiet"><i class="fa fa-check"></i></button>
+                </div>
+              </div>
+              <div class="right">
+                <span class="toolbar-button navigation-bar__line-height">
+                  <i id="trash" class="fa fa-trash-o" ng-click="deleteList(currentList)"></i>
                 </span>
               </div>
-                
-              
-            </ons-toolbar>          
+            </ons-toolbar>  
+
             <div id="item-input-holder">
-              <button id="btn-additem" class="button" ng-click="currentList.addItem(inputName); clearModel()">   <i class="fa fa-plus"></i>
+              <button id="btn-additem" class="button button--cta" ng-click="currentList.addItem(inputName); clearModel()">   <i class="fa fa-plus"></i>
               </button>
-            <div id="list-input-holder">
-              <input id="input-item" type="text" placeholder="add an item" class="text-input" ng-model="inputName"/>
+              <div id="list-input-holder">
+                <input id="input-item" type="text" placeholder="add an item" class="text-input" ng-model="inputName"/>
+              </div>
             </div>
-          </div>
-          <h6>My Items:</h6>
-          <ul class="list">
-            <!-- new list items get displayed here -->
-            <li class="list__item" ng-repeat="item in currentList.items"> 
-              {{ item.name }}
-              <i ng-click="currentList.deleteItem(item.id)" class="fa fa-times-circle delete"></i>
-            </li>
-          </ul>
-          <button id="btn-saveitem" class="button button--large" ng-click="saveList()">Save</button>
-          <!-- controller end -->
+            <ul class="list">
+              <!-- new list items get displayed here -->
+              <li class="list__item" ng-repeat="item in currentList.items"> 
+                {{ item.name }}
+                <i ng-click="currentList.deleteItem(item.id)" class="fa fa-times delete"></i>
+              </li>
+            </ul>
           </ons-page> 
         </ons-template>
 
-       
-      </ons-navigator>
-    </div>
+
+
+
+        
+        <!-- this is where you go shopping // shopping template -->
+        <ons-template id="shopping.html">
+          <ons-navigator var="cartnav">
+            <ons-page ng-controller="ShoppingController">
+
+              <div ng-if="!currentList">
+                <h6>Select a list to start shopping</h6>
+                 <ul class="list">
+                  <li class="list__item list__item--tappable" ng-repeat="list in allLists" ng-click="setShoppingList(list)">
+                    {{ list.name}}
+                  </li>
+                </ul>
+              </div>
+
+              <div ng-if="currentList">
+              <ons-toolbar style="box-sizing: border-box; padding: 0 10px">
+                <div class="left" style="line-height: 44px">
+                  {{ currentList.total | currency}}
+                </div>
+                
+                <div class="right">
+                    <ons-icon ng-click="setList(currentList, 'cart.html')" id="cart" icon="fa-shopping-cart" style="margin-top: 10px"></ons-icon>
+                </div>
+              </ons-toolbar> 
+              
+                <ul class="list">
+                  <li class="list__item list__item--tappable" ng-repeat="item in currentList.items" ng-click="setItem(item); show('addtocart.html')">
+                    {{ item.name}}
+                  </li>
+                </ul>
+              </div>
+            </ons-page>
+          </ons-navigator>
+        </ons-template>
+
+        <ons-template id="cart.html">
+          <ons-page ng-controller="CartController">
+            <ons-toolbar>
+              <div class="left" style="line-height: 44px">
+                <ons-back-button>Back</ons-back-button>
+              </div>
+              <div class="center">
+                Items in your cart
+              </div>
+              
+            </ons-toolbar>  
+            <ul class="list">
+              <li class="list__item list__item--tappable" ng-repeat="item in currentList.cart" ng-click="callGet(item)">
+                {{ item.name }}
+              </li>
+            </ul>
+          </ons-page>
+        </ons-template>
+
+        <ons-template id="removefromcart.html">
+          <ons-dialog id="retard" var="retard" ng-controller="DialogController">
+            <ons-toolbar inline>
+                      <div class="center">
+                        Remove Item
+                      </div>
+                    </ons-toolbar>
+                    <div class="data-display">
+                    <p>Item: {{ item.name }}</p>
+                    <p># of items to remove: {{ item.quantity }}</p>
+                    <p>Total after removal: {{ currentList.total - (item.price * item.quantity) | currency }} </p>
+                    </div>
+
+                    <div class="centered-button-bar">
+                      <div class="button-bar__item">
+                        <button class="button-bar__button" ng-click="itemQuantityDecrease()">
+                          <i class="fa fa-minus" aria-hidden="true"></i>
+                        </button>
+                      </div>
+
+                      <div class="button-bar__item">
+                        <button class="button-bar__button" ng-click="itemQuantityIncrease()">
+                          <i class="fa fa-plus" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: center; margin-bottom: 10px;" class="dialog-p">
+                      <ons-button class="button button--quiet" ng-click="retard.hide()">Cancel</ons-button>
+                      <ons-button class="button button--cta" ng-click="removeFromCart()">
+                        Remove
+                      </ons-button>
+                    </div>
+          </ons-dialog>
+        </ons-template>
+
+
+
+
+        <!-- dialog prompt for adding an item to your shopping cart -->
+        <ons-template id="addtocart.html">
+                  <ons-dialog id="dialog" var="dialog" ng-controller="DialogController">
+
+                    <ons-toolbar inline>
+                      <div class="center">
+                        Add to cart
+                      </div>
+                    </ons-toolbar>
+
+                    <!--<p style="margin: 10px 20px" class="dialog-p">Item: {{ item.name }}</p>-->
+
+                    <p style="margin: 10px 20px" class="dialog-p">
+                      <input id="price_input" placeholder="{{ placeHolder }}" ng-model="price" class="text-input">
+                    </p>
+
+                    <p style="margin: 10px 20px" class="dialog-p">
+
+                    <div style="margin: 5px 20px" id="quantity">Quantity: {{ quantity }}</div>
+
+                    <div id="button-bar" class="button-bar">
+                      <div class="button-bar__item">
+                        <button class="button-bar__button" ng-click="decreaseQuantity()">
+                          <i class="fa fa-minus" aria-hidden="true"></i>
+                        </button>
+                      </div>
+
+                      <div class="button-bar__item">
+                        <button class="button-bar__button" ng-click="increaseQuantity()">
+                          <i class="fa fa-plus" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    </p>
+
+                   
+
+                    <div style="display: flex; justify-content: center; margin: 18px 0" class="dialog-p">
+                      <ons-button class="button button--quiet" ng-click="dialog.hide(); clearModel()">Cancel</ons-button>
+                      <ons-button class="button button--cta" ng-click="checkData(price, quantity)">
+                        Add
+                      </ons-button>
+                    </div>
+
+                  </ons-dialog>
+        </ons-template>
+
+        
+      
+   
        <script src="js/angular/angular.min.js"></script>
        <script src="lib/onsen/js/onsenui.js"></script>
-       <script src="js/jquery-2.2.1.js"></script>
+       <script src="lib/jquery-2.2.1.js"></script>
        <script src="js/main.js"></script>
-       <script src="js/shoppingList.js"></script>
+       <script src="js/controllers/listcontroller.js"></script>
+       <script src="js/controllers/itemcontroller.js"></script>
+       <script src="js/controllers/shoppingcontroller.js"></script>
+       <script src="js/controllers/dialogcontroller.js"></script>
+       <script src="js/controllers/cartcontroller.js"></script>
+       <script src="js/factories/ShoppingList.js"></script>
+       <script src="js/factories/ListItem.js"></script>
+       <script src="js/services/setitemservice.js"></script>
+       <script src="js/services/addtodbservice.js"></script>
+       <script src="js/services/getfromdbservice.js"></script>
+       <script src="js/services/setlistservice.js"></script>
     </body>
 </html>
+
